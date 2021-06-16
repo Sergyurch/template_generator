@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<title>Генератор шаблонов</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="style.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="container">
+			<h1 class="title">Генератор HTML+CSS шаблонов</h1>
+			<div class="options-container">
+				<div class="options">
+					<div class="options-item">
+						<div class="options-item__head">CSS Reset:</div>
+						<div class="options-item__body">
+							<select class="options-item__select" onchange="changeReset(this)">
+								<option value="epickReset">Сброс стилей от Eric Meyer</option>
+								<option value="yahooReset">Сброс стилей от Yahoo!</option>
+								<option value="simpleReset">* {margin: 0; padding: 0;}</option>
+							</select>
+						</div>
+					</div>
+					<div class="inner-container">
+						<div class="options-item options-item_width-50 options-item_width-100">
+							<div class="options-item__head">Заливка блоков цветом:</div>
+							<div class="options-item__body">
+								<label>Да<input type="radio" name="color" value="true" checked></label>
+								<label>Нет<input type="radio" name="color" value="false"></label>
+							</div>
+						</div>
+						<div class="options-item options-item_width-50 options-item_width-100">
+							<div class="options-item__head">Ширина макета:</div>
+							<div class="options-item__body options-item__body_flex">
+								<input type="number" name="template-width" class="options-item__number" onchange="changeDimensions()" min="1000" step="1" value="1000"><span>px</span>
+							</div>
+						</div>
+					</div>
+					<div class="inner-container">
+						<div class="options-item options-item_width-50 options-item_width-100">
+							<div class="options-item__head">Высота шапки (header):</div>
+							<div class="options-item__body options-item__body_flex">
+								<input type="number" name="header-hight" class="options-item__number" onchange="changeDimensions()" min="1" step="1" value="150"><span>px</span>
+							</div>
+						</div>
+						<div class="options-item options-item_width-50 options-item_width-100">
+							<div class="options-item__head">Высота подвала (footer):</div>
+							<div class="options-item__body options-item__body_flex">
+								<input type="number" name="footer-hight" class="options-item__number" onchange="changeDimensions()" min="1" step="1" value="150"><span>px</span>
+							</div>
+						</div>
+					</div>
+					<div class="options-item">
+						<div class="options-item__head">Сайдбар:</div>
+						<div class="options-item__body">
+							<label>Слева<input type="radio" name="sidebar" value="left" checked></label>
+							<label>Справа<input type="radio" name="sidebar" value="right"></label>
+							<label>Нету<input type="radio" name="sidebar" value="false"></label><br><br>
+							<label id="sidebar-width">Ширина <input type="number" name="sidebar-width" class="options-item__number" onchange="changeDimensions()" min="1" step="1" value="150"><span>px</span></label>
+						</div>
+					</div>
+					<div class="options-item">
+						<div class="options-item__head">Меню под шапкой:</div>
+						<div class="options-item__body">
+							<label>Да<input type="radio" name="menu" value="true" checked></label>
+							<label>Нет<input type="radio" name="menu" value="false"></label>
+							<div id="menu-elements">
+								<p>Введите через запятую названия пунктов меню:</p>
+								<textarea id="menu-elements-list" onchange="changeMenuList()" rows="3"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="preview">
+					<div class="preview__head">Предпросмотр:</div>
+					<div class="preview__body">
+						<div id="site" class="site">
+							<div class="site__header">
+								<div class="site__menu"></div>
+							</div>
+							<div class="site__center">
+								<div class="site__sidebar"></div>
+								<div class="site__main"></div>
+							</div>
+							<div class="site__footer"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<button onclick="download_zip()">Скачать шаблон</button>
+		</div>
+		<script>
+			'use strict';
+
+			const epickReset = 
+`html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;}`;
+
+			const yahooReset = 
+`body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td {
+	margin: 0;
+	padding: 0;
+}
+
+table {
+	border-collapse: collapse;
+ 	border-spacing: 0;
+}
+
+fieldset, img {
+ 	 border: 0;
+}
+
+address, caption, cite, code, dfn, em, strong, th, var {
+	font-style: normal;
+ 	font-weight: normal;
+}
+
+ol, ul {
+	list-style: none;
+}
+
+caption, th {
+	text-align: left;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-size: 100%;
+	font-weight: normal;
+}
+
+q:before, q:after {
+	content: '';
+}
+
+abbr, acronym {
+	border: 0;
+}`;
+
+			const simpleReset = '* {margin: 0; padding: 0;}';
+			const siteCenter = document.querySelector('.site__center');
+			const siteSidebar = document.querySelector('.site__sidebar');
+			const siteMain = document.querySelector('.site__main');
+			const siteMenu = document.querySelector('.site__menu');
+			const sidebarWidth = document.getElementById('sidebar-width');
+			const menuElements = document.getElementById('menu-elements');
+			let sidebarContent = '\n\t\t\t\t<aside>Sidebar</aside>';
+			let menuContent = '\t<nav>Menu</nav>\n\t\t\t';
+			let cssReset = epickReset;
+			let backgroundColor = true;
+			let templateWidth = 1000;
+			let headerHight = 150;
+			let footerHight = 150;
+			let sidebarWidthPx = 150;
+			let sidebarMinHeight = 100;
+			let middleFlexDirection = 'row';
+
+				
+			document.querySelectorAll('input[type="radio"]').forEach(function(elem) {
+				elem.addEventListener('change', function() {
+					if (event.target.name == 'sidebar') {
+						if (event.target.value == 'left') {
+							siteCenter.style.flexDirection = 'row';
+							siteMain.style.width = 'calc(100% - 50px)';
+							siteSidebar.style.display = 'block';
+							sidebarWidth.style.display = 'block';
+							sidebarContent = '\n\t\t\t\t<aside>Sidebar</aside>';
+							middleFlexDirection = 'row';
+							sidebarWidthPx = sidebarWidth.firstElementChild.value;
+							sidebarMinHeight = 100;
+						} else if (event.target.value == 'right') {
+							siteCenter.style.flexDirection = 'row-reverse';
+							siteMain.style.width = 'calc(100% - 50px)';
+							siteSidebar.style.display = 'block';
+							sidebarWidth.style.display = 'block';
+							sidebarContent = '\n\t\t\t\t<aside>Sidebar</aside>';
+							middleFlexDirection = 'row-reverse';
+							sidebarWidthPx = sidebarWidth.firstElementChild.value;
+							sidebarMinHeight = 100;
+						} else {
+							siteSidebar.style.display = 'none';
+							siteMain.style.width = '100%';
+							sidebarWidth.style.display = 'none';
+							sidebarContent = '';
+							middleFlexDirection = 'row';
+							sidebarWidthPx = 0;
+							sidebarMinHeight = 0;
+						}
+					}
+
+					if (event.target.name == 'menu') {
+						if (event.target.value == 'true') {
+							siteMenu.style.display = 'block';
+							menuElements.style.display = 'block';
+							changeMenuList();
+						} else {
+							siteMenu.style.display = 'none';
+							menuElements.style.display = 'none';
+							menuContent = '';
+						}
+					}
+
+					if (event.target.name == 'color') {
+						if (event.target.value == 'true') {
+							backgroundColor = true;
+						} else {
+							backgroundColor = false;
+						}
+					}
+
+
+				});
+			});
+
+
+			function changeReset(field) {
+				if (field.value == 'epickReset') cssReset = epickReset;
+				if (field.value == 'yahooReset') cssReset = yahooReset;
+				if (field.value == 'simpleReset') cssReset = simpleReset;
+			}
+
+			
+			function changeDimensions() {
+				let field = event.target;
+				
+				switch(field.name) {
+					case 'template-width':
+					templateWidth = field.value;
+					break;
+
+					case 'header-hight':
+					headerHight = field.value;
+					break;
+
+					case 'footer-hight':
+					footerHight = field.value;
+					break;
+
+					case 'sidebar-width':
+					sidebarWidthPx = field.value;
+					break;
+				}
+			}
+
+
+			function changeMenuList() {
+				if (document.getElementById('menu-elements-list').value != '') {
+					let list = document.getElementById('menu-elements-list').value.split(',');
+					menuContent = '\t<nav>\n\t\t\t\t\t<ul>\n';
+
+					list.forEach(function(listItem) {
+						menuContent += `\t\t\t\t\t\t<li><a href="#">${listItem}</a></li>\n`;
+					});
+
+					menuContent += '\t\t\t\t\t</ul>\n\t\t\t\t</nav>\n\t\t\t';
+				} else {
+					menuContent = `\t<nav>Menu</nav>\n\t\t\t`;
+				}
+				
+			}
+
+
+			function getBackgroundColor() {
+				return (backgroundColor) ? getRandomColor() : 'transparent';
+
+				function getRandomColor() {
+					return 'rgb(' + randomNumber() + ',' + randomNumber() + ',' + randomNumber() + ')';
+
+					function randomNumber() {
+						return Math.floor(Math.random() * 256);
+					}
+				}
+			}
+
+							
+			function download_zip() {
+				let htmlContent = 
+`<!DOCTYPE html>
+<html lang="ru">
+	<head>
+	<title>Шаблон</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="style.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="container">
+			<header>Header</header>
+			${menuContent}<div class="middle">${sidebarContent}
+				<main>Main</main>
+			</div>
+			<footer>Footer</footer>
+		</div>
+	</body>
+</html>`;
+
+				let cssContent = 
+`${cssReset}
+
+* {
+	box-sizing: border-box;
+}
+
+.container {
+	max-width: ${templateWidth}px;
+	margin: auto;
+}
+
+header {
+	height: ${headerHight}px;
+	border: 1px solid black;
+	background-color: ${getBackgroundColor()};
+}
+
+nav {
+	height: 40px;
+	min-height: 40px;
+	border: 1px solid black;
+	background-color: ${getBackgroundColor()};
+}
+
+nav ul {
+	list-style-type: none;
+	height: 100%;
+	display: flex;
+	align-items: center;
+}
+
+nav ul li {
+	display: inline-block;
+	margin-left: 20px;
+}
+
+.middle {
+	height: 500px;
+	display: flex;
+	flex-direction: ${middleFlexDirection};
+}
+
+aside {
+	width: ${sidebarWidthPx}px;
+	border: 1px solid black;
+	background-color: ${getBackgroundColor()};
+	min-height: 100px;
+}
+
+main {
+	width: calc(100% - ${sidebarWidthPx}px);
+	border: 1px solid black;
+	background-color: ${getBackgroundColor()};
+}
+
+footer {
+	height: ${footerHight}px;
+	border: 1px solid black;
+	background-color: ${getBackgroundColor()};
+}
+
+@media (max-width: 700px) {
+	.middle {
+		flex-direction: column-reverse;
+	}
+
+	aside {
+		width: 100%;
+	}
+
+	main {
+		width: 100%;
+		height: calc(100% - ${sidebarMinHeight}px);
+	}
+
+	nav {
+		height: auto;
+	}
+
+	nav ul {
+		padding-top: 20px;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	nav ul li{
+		margin-left: 0;
+		margin-bottom: 20px;
+	}
+}`;
+
+				let zip = new JSZip();
+	            let indexContent = htmlContent;
+	            let styleCssContent = cssContent;
+	            zip.file("index.html", indexContent);
+	            zip.file("style.css", styleCssContent);
+	            zip.generateAsync({type:"base64"}).then(function(content) {
+				    let link = document.createElement('a');
+				    link.href = "data:application/zip;base64," + content;
+				    link.download = "template.zip";
+				    document.body.appendChild(link);
+				    link.click();
+				    document.body.removeChild(link);
+				});
+        
+      }
+		</script>
+		<script src="jszip.js"></script>
+	</body>
+</html>
